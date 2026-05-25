@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   todos.forEach((t) => {
     const todo = new Todo(t.id, t.todo, t.completed);
-
     todosList.addTodo(todo);
   });
 
