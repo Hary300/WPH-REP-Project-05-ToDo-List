@@ -117,6 +117,29 @@ function updateTaskNumber() {
   taskNumber.innerText = tasks;
 }
 
+// ===== INCOMPLETE NUMBER =====
+const incompleteTaskNumber = document.querySelector('#incomplete-task-number');
+function updateIncompleteTaskNumber() {
+  const incompleteTasks = todoList
+    .getAll()
+    .filter((todo) => !todo.completed).length;
+  console.log(incompleteTasks);
+  incompleteTaskNumber.innerText = incompleteTasks;
+}
+updateIncompleteTaskNumber();
+
+// ===== COMPLETE NUMBER =====
+const completeTaskNumber = document.querySelector('#complete-task-number');
+function updateCompleteTaskNumber() {
+  const completeTasks = todoList
+    .getAll()
+    .filter((todo) => todo.completed).length;
+
+  completeTaskNumber.innerText = completeTasks;
+}
+
+updateCompleteTaskNumber();
+
 // ====== ADD TODO ======
 const todoInput = document.querySelector('#input-todo');
 const todoAddButton = document.querySelector('#todo-add-button');
@@ -125,17 +148,63 @@ const todoContainer = document.querySelector('#todo-container');
 
 let newTodoUserInput = '';
 
+// 1. Request Input
 todoInput.addEventListener('input', function (event) {
   newTodoUserInput = todoInput.value.trim();
 });
 
+// 2. Add Todo by pressing Enter button
 todoInput.addEventListener('keydown', function (event) {
   event.key === 'Enter' && handleAddTodo();
 });
 
+// 3. Add Todo by clicking Add Todo button
 todoAddButton.addEventListener('click', function () {
   handleAddTodo();
 });
+
+const checkSvg = `
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 24 24"
+fill="#3F9CA1"
+class="size-5 "
+>
+<path
+fill-rule="evenodd"
+d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+clip-rule="evenodd"
+/>
+</svg> 
+
+`;
+
+function handleAddTodo() {
+  // 1. validation
+  if (!newTodoUserInput) {
+    showError();
+    return;
+  }
+
+  hideError();
+
+  // 2. Create object todo
+  const todo = new Todo(newTodoUserInput);
+
+  // 3. Add todo
+  todoList.addTodo(todo);
+
+  // 4. render todo
+  renderTodos();
+
+  // 5. Update task Number
+  updateTaskNumber();
+
+  // 6. Update Incomplete task number
+  updateIncompleteTaskNumber();
+
+  todoInput.value = '';
+}
 
 function showError() {
   errorText.classList.remove('invisible');
@@ -148,14 +217,76 @@ function hideError() {
   todoInput.classList.remove('border-red-500');
 }
 
-function updateTodoListUI(todo, id) {
+// ====== TOGGLE, DELETE, EDIT TODO ======
+document.addEventListener('click', function (event) {
+  // ====== TOGGLE TODO ======
+  const isToggleTodo = event.target.closest('.toggle-todo');
+  if (isToggleTodo) {
+    const markTodo = isToggleTodo.querySelector('.mark-todo');
+    // 1. Access id
+    const clickedElementTodo = isToggleTodo.closest('.todo');
+    const idTodo = clickedElementTodo.dataset.id;
+
+    // 2. Find todo in object todos with the same id
+    const clickedObjectTodo = todoList.todos.find((todo) => todo.id === idTodo);
+
+    // 3. Toggle
+    clickedObjectTodo.toggleTodo();
+
+    // 4. render todo
+    renderTodos();
+
+    // 5. Update incomplete task number
+    updateIncompleteTaskNumber();
+
+    // 6. Update complete task number
+    updateCompleteTaskNumber();
+  }
+
+  // ====== DELETE TODO ======
+  const isDeleteButton = event.target.closest('.delete-button');
+  if (isDeleteButton) {
+    // 1. Access id
+    const clickedElementTodo = isDeleteButton.closest('.todo');
+    const idTodo = clickedElementTodo.dataset.id;
+
+    // 2. Delete
+    todoList.deleteTodo(idTodo);
+
+    // 3. render todo
+    renderTodos();
+
+    // 4. Update task number
+    updateTaskNumber();
+
+    // 5. Update incomplete task number
+    updateIncompleteTaskNumber();
+
+    // 6. Update complete task number
+    updateCompleteTaskNumber();
+  }
+
+  // ====== EDIT TODO ======
+});
+
+// ===== RENDER TODO LIST =====
+function renderTodos() {
+  todoContainer.innerHTML = '';
+
+  todoList.todos.forEach((todo) => {
+    updateTodoListUI(todo.todo, todo.id, todo.completed);
+  });
+}
+
+// ===== UPDATE UI =====
+function updateTodoListUI(todo, id, completed) {
   const todoElement = `
-  <li class="todo flex justify-between items-center px-1 py-2 hover:bg-[#E8F3F5] hover:dark:bg-[#1F383E]" data-id="${id}">
+  <li class="todo flex justify-between items-center px-1 py-2 hover:bg-[#E8F3F5] hover:dark:bg-[#1F383E] ${completed ? 'bg-[#E8F3F5] dark:bg-[#1F383E]' : ''}" data-id="${id}">
   <div class="toggle-todo flex gap-2 items-center w-full cursor-pointer">
     <div
-      class="mark-todo size-4 flex justify-center items-center rounded-md border cursor-pointer"
-    ></div>
-    <p class="text-todo md:text-lg capitalize pointer-events-none">${todo}</p>
+      class="mark-todo size-4 flex justify-center items-center rounded-md border cursor-pointer ${completed ? 'border-0' : 'border'}"
+    >${completed ? checkSvg : ''}</div>
+    <p class="text-todo md:text-lg capitalize pointer-events-none ${completed ? 'line-through text-gray-500' : ''}">${todo}</p>
   </div>
   <div class="flex gap-2">
     <button class="delete-button">
@@ -198,102 +329,6 @@ function updateTodoListUI(todo, id) {
   todoContainer.insertAdjacentHTML('beforeend', todoElement);
 }
 
-function handleAddTodo() {
-  if (!newTodoUserInput) {
-    showError();
-    return;
-  }
-
-  hideError();
-
-  const todo = new Todo(newTodoUserInput);
-  todoList.addTodo(todo);
-
-  updateTodoListUI(todo.todo, todo.id);
-
-  updateTaskNumber();
-
-  todoInput.value = '';
-}
-
-document.addEventListener('click', function (event) {
-  // ====== TOGGLE TODO ======
-  const isToggleTodo = event.target.closest('.toggle-todo');
-  if (isToggleTodo) {
-    const markTodo = isToggleTodo.querySelector('.mark-todo');
-    // 1. Access id
-    const clickedElementTodo = isToggleTodo.closest('.todo');
-    const idTodo = clickedElementTodo.dataset.id;
-
-    // 2. Find todo in object todos with the same id
-    const clickedObjectTodo = todoList.todos.find((todo) => todo.id === idTodo);
-
-    // 3. Toggle
-    clickedObjectTodo.toggleTodo();
-
-    // 4. Update UI only the clicked todo
-    updateToggleTodoUI(markTodo, clickedElementTodo, clickedObjectTodo);
-  }
-
-  // ====== DELETE TODO ======
-  const isDeleteButton = event.target.closest('.delete-button');
-  if (isDeleteButton) {
-    // 1. Access id
-    const clickedElementTodo = isDeleteButton.closest('.todo');
-    const idTodo = clickedElementTodo.dataset.id;
-
-    // 2. Delete
-    todoList.deleteTodo(idTodo);
-
-    // 3. rerender
-    renderTodos();
-
-    // 4. Update task number
-    updateTaskNumber();
-  }
-});
-
-function renderTodos() {
-  console.log(todoContainer);
-  todoContainer.innerHTML = '';
-
-  todoList.todos.forEach((todo) => {
-    updateTodoListUI(todo.todo, todo.id);
-  });
-}
-
-function updateToggleTodoUI(markTodo, clickedElementTodo, clickedObjectTodo) {
-  const textTodo = clickedElementTodo.querySelector('.text-todo');
-
-  if (clickedObjectTodo.completed) {
-    clickedElementTodo.classList.add('bg-[#E8F3F5]', 'dark:bg-[#1F383E]');
-    markTodo.classList.remove('border');
-    textTodo.classList.add('line-through', 'text-gray-500');
-    markTodo.innerHTML = `
-    <svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 24 24"
-  fill="#3F9CA1"
-  class="size-5 "
->
-  <path
-    fill-rule="evenodd"
-    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-    clip-rule="evenodd"
-  />
-</svg>  
-    
-    `;
-  } else {
-    clickedElementTodo.classList.remove('bg-[#E8F3F5]', 'dark:bg-[#1F383E]');
-    markTodo.classList.add('border');
-    markTodo.innerHTML = '';
-    textTodo.classList.remove('line-through', 'text-gray-500');
-  }
-}
-
-// ====== EDIT TODO ======
-
 // document.addEventListener('DOMContentLoaded', async function () {
 //   const data = await fetchData();
 //   const todos = data.todos;
@@ -318,5 +353,35 @@ function updateToggleTodoUI(markTodo, clickedElementTodo, clickedObjectTodo) {
 //     return data;
 //   } catch (err) {
 //     return err;
+//   }
+// }
+
+// storage
+// function updateToggleTodoUI(markTodo, clickedElementTodo, clickedObjectTodo) {
+//   const textTodo = clickedElementTodo.querySelector('.text-todo');
+
+//   if (clickedObjectTodo.completed) {
+//     // clickedElementTodo.classList.add('bg-[#E8F3F5]', 'dark:bg-[#1F383E]');
+//     // markTodo.classList.remove('border');
+//     // textTodo.classList.add('line-through', 'text-gray-500');
+//     //     markTodo.innerHTML = `
+//     // <svg
+//     //   xmlns="http://www.w3.org/2000/svg"
+//     //   viewBox="0 0 24 24"
+//     //   fill="#3F9CA1"
+//     //   class="size-5 "
+//     // >
+//     //   <path
+//     //     fill-rule="evenodd"
+//     //     d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+//     //     clip-rule="evenodd"
+//     //   />
+//     // </svg>
+//     //     `;
+//   } else {
+//     // clickedElementTodo.classList.remove('bg-[#E8F3F5]', 'dark:bg-[#1F383E]');
+//     // markTodo.classList.add('border');
+//     // markTodo.innerHTML = '';
+//     // textTodo.classList.remove('line-through', 'text-gray-500');
 //   }
 // }
