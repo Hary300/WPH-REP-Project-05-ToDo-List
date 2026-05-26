@@ -91,10 +91,10 @@ class TodoList {
 }
 
 class Todo {
-  constructor(id, todo, completed) {
-    this.id = id;
+  constructor(todo, completed, id) {
+    this.id = id ? id : Date.now() + Math.random().toString(10).slice(2);
     this.todo = todo;
-    this.completed = completed;
+    this.completed = completed ? complete : false;
   }
 
   toggleTodo() {
@@ -106,29 +106,66 @@ class Todo {
   }
 }
 
-document.addEventListener('DOMContentLoaded', async function () {
-  const data = await fetchData();
-  const todos = data.todos;
-  const todosList = new TodoList();
+// const todo1 = new Todo('makan', false);
+// const todo2 = new Todo('minum', false);
+// const todo3 = new Todo('tidur');
+// console.log(todo1);
+// console.log(todo2);
+// console.log(todo3);
 
-  todos.forEach((t) => {
-    const todo = new Todo(t.id, t.todo, t.completed);
-    todosList.addTodo(todo);
-  });
+// const todoList = new TodoList();
+// todoList.addTodo(todo1);
+// todoList.addTodo(todo2);
+// todoList.addTodo(todo3);
 
-  console.log(todosList.getAll());
+// console.log(todoList.getAll());
+
+// ====== ADD TODO ======
+const todoInput = document.querySelector('#input-todo');
+const todoAddButton = document.querySelector('#todo-add-button');
+const errorText = document.querySelector('#error-text');
+let newTodo = '';
+todoInput.addEventListener('change', function (event) {
+  newTodo = event.target.value.trim();
 });
 
-async function fetchData() {
-  try {
-    const res = await fetch('https://dummyjson.com/todo');
-    if (!res.ok) {
-      throw new Error(`Status: ${res.status}`);
-    }
-    const data = await res.json();
-
-    return data;
-  } catch (err) {
-    return err;
+todoAddButton.addEventListener('click', function () {
+  if (!newTodo) {
+    errorText.classList.remove('invisible');
+    todoInput.classList.remove('border-[#3F9CA1]');
+    todoInput.classList.add('border-red-500');
+    return;
   }
-}
+  errorText.classList.add('invisible');
+  todoInput.classList.add('border-[#3F9CA1]');
+  todoInput.classList.remove('border-red-500');
+});
+
+let isComplete = false;
+
+// document.addEventListener('DOMContentLoaded', async function () {
+//   const data = await fetchData();
+//   const todos = data.todos;
+//   const todosList = new TodoList();
+
+//   todos.forEach((t) => {
+//     const todo = new Todo(t.id, t.todo, t.completed);
+//     todosList.addTodo(todo);
+//   });
+
+//   console.log(todosList.getAll());
+// });
+
+// async function fetchData() {
+//   try {
+//     const res = await fetch('https://dummyjson.com/todo');
+//     if (!res.ok) {
+//       throw new Error(`Status: ${res.status}`);
+//     }
+//     const data = await res.json();
+
+//     return data;
+//   } catch (err) {
+//     return err;
+//   }
+// }

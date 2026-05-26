@@ -7,6 +7,7 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
+    --color-red-500: oklch(63.7% 0.237 25.331);
     --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
@@ -182,6 +183,9 @@
   }
 }
 @layer utilities {
+  .invisible {
+    visibility: hidden;
+  }
   .container {
     width: 100%;
     @media (width >= 40rem) {
@@ -212,6 +216,15 @@
   .mb-auto {
     margin-bottom: auto;
   }
+  .ml-2 {
+    margin-left: calc(var(--spacing) * 2);
+  }
+  .ml-4 {
+    margin-left: calc(var(--spacing) * 4);
+  }
+  .ml-10 {
+    margin-left: calc(var(--spacing) * 10);
+  }
   .flex {
     display: flex;
   }
@@ -241,6 +254,12 @@
   .size-10 {
     width: calc(var(--spacing) * 10);
     height: calc(var(--spacing) * 10);
+  }
+  .h-5 {
+    height: calc(var(--spacing) * 5);
+  }
+  .h-6 {
+    height: calc(var(--spacing) * 6);
   }
   .h-auto {
     height: auto;
@@ -343,6 +362,9 @@
   .border-\[\#3F9CA1\] {
     border-color: #3F9CA1;
   }
+  .border-red-500 {
+    border-color: var(--color-red-500);
+  }
   .border-white {
     border-color: var(--color-white);
   }
@@ -379,6 +401,9 @@
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
+  .p-9 {
+    padding: calc(var(--spacing) * 9);
+  }
   .px-3 {
     padding-inline: calc(var(--spacing) * 3);
   }
@@ -387,6 +412,9 @@
   }
   .pl-3 {
     padding-left: calc(var(--spacing) * 3);
+  }
+  .pl-5 {
+    padding-left: calc(var(--spacing) * 5);
   }
   .text-center {
     text-align: center;
@@ -421,11 +449,20 @@
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
   }
+  .text-red-500 {
+    color: var(--color-red-500);
+  }
   .text-white {
     color: var(--color-white);
   }
   .underline {
     text-decoration-line: underline;
+  }
+  .opacity-0 {
+    opacity: 0%;
+  }
+  .opacity-100 {
+    opacity: 100%;
   }
   .shadow-\[0_0_1px_\#3F9CA1\] {
     --tw-shadow: 0 0 1px var(--tw-shadow-color, #3F9CA1);
