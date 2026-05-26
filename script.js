@@ -106,22 +106,18 @@ class Todo {
   }
 }
 
-// const todo1 = new Todo('makan', false);
-// const todo2 = new Todo('minum', false);
-// const todo3 = new Todo('tidur');
-// console.log(todo1);
-// console.log(todo2);
-// console.log(todo3);
-
 const todoList = new TodoList();
-// todoList.addTodo(todo1);
-// todoList.addTodo(todo2);
-// todoList.addTodo(todo3);
-
-// console.log(todoList.getAll());
 
 // ====== TASK NUMBER ======
 const taskNumber = document.querySelector('#task-number');
+const taskNumberText = document.querySelector('#task-number-text');
+updateTaskNumber();
+
+function updateTaskNumber() {
+  const tasks = todoList.getAll().length;
+  taskNumber.innerText = tasks;
+  taskNumberText.innerText = tasks > 1 ? 'Tasks' : 'Task';
+}
 
 // ====== ADD TODO ======
 const todoInput = document.querySelector('#input-todo');
@@ -217,6 +213,8 @@ function handleAddTodo() {
 
   updateTodoListUI(todo.todo, todo.id);
 
+  updateTaskNumber();
+
   todoInput.value = '';
 }
 
@@ -250,8 +248,10 @@ document.addEventListener('click', function (event) {
     todoList.deleteTodo(idTodo);
 
     // 3. rerender
-
     renderTodos();
+
+    // 4. Update task number
+    updateTaskNumber();
   }
 });
 
