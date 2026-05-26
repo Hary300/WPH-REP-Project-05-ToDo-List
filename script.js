@@ -1,4 +1,6 @@
-// ===== DARK MODE =====
+/* =============================================
+      DARK MODE 
+============================================= */
 const darkModeButton = document.querySelector('#dark-mode-button');
 const darkIcon = `
 <svg
@@ -48,7 +50,9 @@ darkModeButton.addEventListener('click', function () {
   }
 });
 
-// ==== CLOCK =====
+/* =============================================
+      CLOCK 
+============================================= */
 const clock = document.querySelector('#clock');
 
 function runClock() {
@@ -63,7 +67,9 @@ function runClock() {
 document.addEventListener('DOMContentLoaded', runClock);
 setInterval(runClock, 1000);
 
-// ===== DATE =====
+/* =============================================
+      DATE
+============================================= */
 const date = document.querySelector('#date');
 const today = new Date();
 const dayName = today.toLocaleDateString('en-US', { weekday: 'long' });
@@ -71,7 +77,9 @@ const monthName = today.toLocaleDateString('en-US', { month: 'long' });
 
 date.innerText = `${dayName}, ${today.getDate()} ${monthName} ${today.getFullYear()}`;
 
-// ===== CLASS ======
+/* =============================================
+      CLASS
+============================================= */
 class TodoList {
   constructor() {
     this.todos = [];
@@ -108,7 +116,9 @@ class Todo {
 
 const todoList = new TodoList();
 
-// ====== TASK NUMBER ======
+/* =============================================
+      TASK NUMBER
+============================================= */
 const taskNumber = document.querySelector('#task-number');
 updateTaskNumber();
 
@@ -117,18 +127,21 @@ function updateTaskNumber() {
   taskNumber.innerText = tasks;
 }
 
-// ===== INCOMPLETE NUMBER =====
+/* =============================================
+      INCOMPLETE TASK NUMBER
+============================================= */
 const incompleteTaskNumber = document.querySelector('#incomplete-task-number');
 function updateIncompleteTaskNumber() {
   const incompleteTasks = todoList
     .getAll()
     .filter((todo) => !todo.completed).length;
-  console.log(incompleteTasks);
   incompleteTaskNumber.innerText = incompleteTasks;
 }
 updateIncompleteTaskNumber();
 
-// ===== COMPLETE NUMBER =====
+/* =============================================
+      COMPLETE TASK NUMBER
+============================================= */
 const completeTaskNumber = document.querySelector('#complete-task-number');
 function updateCompleteTaskNumber() {
   const completeTasks = todoList
@@ -137,10 +150,11 @@ function updateCompleteTaskNumber() {
 
   completeTaskNumber.innerText = completeTasks;
 }
-
 updateCompleteTaskNumber();
 
-// ====== ADD TODO ======
+/* =============================================
+      ADD TODO FUNCTIONALITY
+============================================= */
 const todoInput = document.querySelector('#input-todo');
 const todoAddButton = document.querySelector('#todo-add-button');
 const errorText = document.querySelector('#error-text');
@@ -194,7 +208,7 @@ function handleAddTodo() {
   // 3. Add todo
   todoList.addTodo(todo);
 
-  // 4. render todo
+  // 4. Render todo
   renderTodos();
 
   // 5. Update task Number
@@ -217,9 +231,13 @@ function hideError() {
   todoInput.classList.remove('border-red-500');
 }
 
-// ====== TOGGLE, DELETE, EDIT TODO ======
+/* =============================================
+      TOGGLE, DELETE, EDIT TODO FUNCTIONALITY
+============================================= */
 document.addEventListener('click', function (event) {
-  // ====== TOGGLE TODO ======
+  /* =========================
+      TOGGLE FUNCTIONALITY
+  ============================*/
   const isToggleTodo = event.target.closest('.toggle-todo');
   if (isToggleTodo) {
     const markTodo = isToggleTodo.querySelector('.mark-todo');
@@ -233,7 +251,7 @@ document.addEventListener('click', function (event) {
     // 3. Toggle
     clickedObjectTodo.toggleTodo();
 
-    // 4. render todo
+    // 4. Render todo
     renderTodos();
 
     // 5. Update incomplete task number
@@ -243,7 +261,9 @@ document.addEventListener('click', function (event) {
     updateCompleteTaskNumber();
   }
 
-  // ====== DELETE TODO ======
+  /* =========================
+      DELETE FUNCTIONALITY
+  ============================*/
   const isDeleteButton = event.target.closest('.delete-button');
   if (isDeleteButton) {
     // 1. Access id
@@ -253,7 +273,7 @@ document.addEventListener('click', function (event) {
     // 2. Delete
     todoList.deleteTodo(idTodo);
 
-    // 3. render todo
+    // 3. Render todo
     renderTodos();
 
     // 4. Update task number
@@ -266,10 +286,17 @@ document.addEventListener('click', function (event) {
     updateCompleteTaskNumber();
   }
 
-  // ====== EDIT TODO ======
+  /* =========================
+      EDIT FUNCTIONALITY
+  ============================*/
+  const isEditButton = event.target.closest('.edit-button');
+  if (isEditButton) {
+  }
 });
 
-// ===== RENDER TODO LIST =====
+/* =============================================
+      RENDER TODO LIST
+============================================= */
 function renderTodos() {
   todoContainer.innerHTML = '';
 
@@ -278,7 +305,9 @@ function renderTodos() {
   });
 }
 
-// ===== UPDATE UI =====
+/* =============================================
+      UPDATE TODO LIST UI 
+============================================= */
 function updateTodoListUI(todo, id, completed) {
   const todoElement = `
   <li class="todo flex justify-between items-center px-1 py-2 hover:bg-[#E8F3F5] hover:dark:bg-[#1F383E] ${completed ? 'bg-[#E8F3F5] dark:bg-[#1F383E]' : ''}" data-id="${id}">
@@ -329,6 +358,10 @@ function updateTodoListUI(todo, id, completed) {
   todoContainer.insertAdjacentHTML('beforeend', todoElement);
 }
 
+/* =============================================
+      FETCH API 
+============================================= */
+
 // document.addEventListener('DOMContentLoaded', async function () {
 //   const data = await fetchData();
 //   const todos = data.todos;
@@ -356,7 +389,9 @@ function updateTodoListUI(todo, id, completed) {
 //   }
 // }
 
-// storage
+/* =============================================
+      STORAGE 
+============================================= */
 // function updateToggleTodoUI(markTodo, clickedElementTodo, clickedObjectTodo) {
 //   const textTodo = clickedElementTodo.querySelector('.text-todo');
 
