@@ -8,6 +8,9 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --color-red-500: oklch(63.7% 0.237 25.331);
+    --color-gray-300: oklch(87.2% 0.01 258.338);
+    --color-gray-400: oklch(70.7% 0.022 261.325);
+    --color-gray-500: oklch(55.1% 0.027 264.364);
     --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
@@ -184,6 +187,9 @@
   }
 }
 @layer utilities {
+  .pointer-events-none {
+    pointer-events: none;
+  }
   .invisible {
     visibility: hidden;
   }
@@ -232,6 +238,14 @@
   .table {
     display: table;
   }
+  .size-2 {
+    width: calc(var(--spacing) * 2);
+    height: calc(var(--spacing) * 2);
+  }
+  .size-3 {
+    width: calc(var(--spacing) * 3);
+    height: calc(var(--spacing) * 3);
+  }
   .size-4 {
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);
@@ -255,6 +269,10 @@
   .size-10 {
     width: calc(var(--spacing) * 10);
     height: calc(var(--spacing) * 10);
+  }
+  .size-100 {
+    width: calc(var(--spacing) * 100);
+    height: calc(var(--spacing) * 100);
   }
   .size-full {
     width: 100%;
@@ -385,11 +403,17 @@
   .bg-\[\#202630\] {
     background-color: #202630;
   }
+  .bg-\[\#E8F3F5\] {
+    background-color: #E8F3F5;
+  }
   .bg-\[\#EEF2F4\] {
     background-color: #EEF2F4;
   }
   .bg-\[\#d6dceb\] {
     background-color: #d6dceb;
+  }
+  .bg-red-500 {
+    background-color: var(--color-red-500);
   }
   .bg-white {
     background-color: var(--color-white);
@@ -415,6 +439,9 @@
   .p-9 {
     padding: calc(var(--spacing) * 9);
   }
+  .px-1 {
+    padding-inline: calc(var(--spacing) * 1);
+  }
   .px-2 {
     padding-inline: calc(var(--spacing) * 2);
   }
@@ -426,6 +453,12 @@
   }
   .py-1\.5 {
     padding-block: calc(var(--spacing) * 1.5);
+  }
+  .py-2 {
+    padding-block: calc(var(--spacing) * 2);
+  }
+  .py-4 {
+    padding-block: calc(var(--spacing) * 4);
   }
   .pr-2 {
     padding-right: calc(var(--spacing) * 2);
@@ -475,6 +508,15 @@
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
   }
+  .text-gray-300 {
+    color: var(--color-gray-300);
+  }
+  .text-gray-400 {
+    color: var(--color-gray-400);
+  }
+  .text-gray-500 {
+    color: var(--color-gray-500);
+  }
   .text-red-500 {
     color: var(--color-red-500);
   }
@@ -483,6 +525,9 @@
   }
   .capitalize {
     text-transform: capitalize;
+  }
+  .line-through {
+    text-decoration-line: line-through;
   }
   .underline {
     text-decoration-line: underline;
@@ -540,6 +585,24 @@
     @media (width >= 48rem) {
       width: calc(var(--spacing) * 5);
       height: calc(var(--spacing) * 5);
+    }
+  }
+  .md\:size-6 {
+    @media (width >= 48rem) {
+      width: calc(var(--spacing) * 6);
+      height: calc(var(--spacing) * 6);
+    }
+  }
+  .md\:size-7 {
+    @media (width >= 48rem) {
+      width: calc(var(--spacing) * 7);
+      height: calc(var(--spacing) * 7);
+    }
+  }
+  .md\:size-10 {
+    @media (width >= 48rem) {
+      width: calc(var(--spacing) * 10);
+      height: calc(var(--spacing) * 10);
     }
   }
   .md\:gap-1 {
@@ -601,6 +664,11 @@
       line-height: var(--tw-leading, var(--text-sm--line-height));
     }
   }
+  .dark\:bg-\[\#\#1F383E\] {
+    &:where(.dark, .dark *) {
+      background-color: ##1F383E;
+    }
+  }
   .dark\:bg-\[\#0F1116\] {
     &:where(.dark, .dark *) {
       background-color: #0F1116;
@@ -609,6 +677,11 @@
   .dark\:bg-\[\#1F242A\] {
     &:where(.dark, .dark *) {
       background-color: #1F242A;
+    }
+  }
+  .dark\:bg-\[\#1F383E\] {
+    &:where(.dark, .dark *) {
+      background-color: #1F383E;
     }
   }
   .dark\:bg-\[\#1c2127\] {
