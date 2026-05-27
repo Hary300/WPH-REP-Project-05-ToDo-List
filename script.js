@@ -162,18 +162,15 @@ const todoContainer = document.querySelector('#todo-container');
 
 let newTodoUserInput = '';
 
-// 1. Request Input
-todoInput.addEventListener('input', function (event) {
-  newTodoUserInput = todoInput.value.trim();
-});
-
-// 2. Add Todo by pressing Enter button
+// 1. Add Todo by pressing Enter button
 todoInput.addEventListener('keydown', function (event) {
+  newTodoUserInput = todoInput.value.trim();
   event.key === 'Enter' && handleAddTodo();
 });
 
-// 3. Add Todo by clicking Add Todo button
+// 2. Add Todo by clicking Add Todo button
 todoAddButton.addEventListener('click', function () {
+  newTodoUserInput = todoInput.value.trim();
   handleAddTodo();
 });
 
@@ -218,11 +215,11 @@ function handleAddTodo() {
   updateIncompleteTaskNumber();
 
   todoInput.value = '';
+  newTodoUserInput = '';
 }
 
 function showError() {
   errorText.classList.remove('invisible');
-  todoInput.classList.remove('border-[#3F9CA1]');
   todoInput.classList.add('border-red-500');
 }
 
@@ -234,22 +231,28 @@ function hideError() {
 /* =============================================
       TOGGLE, DELETE, EDIT TODO FUNCTIONALITY
 ============================================= */
+const modal = document.querySelector('.modal');
+const modalInput = modal.querySelector('.modal-input');
+let selectedEditTodoObject;
+let newTodoName = '';
+
 document.addEventListener('click', function (event) {
   /* =========================
       TOGGLE FUNCTIONALITY
   ============================*/
   const isToggleTodo = event.target.closest('.toggle-todo');
   if (isToggleTodo) {
-    const markTodo = isToggleTodo.querySelector('.mark-todo');
-    // 1. Access id
-    const clickedElementTodo = isToggleTodo.closest('.todo');
-    const idTodo = clickedElementTodo.dataset.id;
+    // 1. Access element id
+    const selectedToggleTodoElement = isToggleTodo.closest('.todo');
+    const selectedToggleTodoElementId = selectedToggleTodoElement.dataset.id;
 
-    // 2. Find todo in object todos with the same id
-    const clickedObjectTodo = todoList.todos.find((todo) => todo.id === idTodo);
+    // 2. Find the todo object that matches the selected toggle element id
+    const selectedToggleTodoObject = todoList.todos.find(
+      (todo) => todo.id === selectedToggleTodoElementId
+    );
 
     // 3. Toggle
-    clickedObjectTodo.toggleTodo();
+    selectedToggleTodoObject.toggleTodo();
 
     // 4. Render todo
     renderTodos();
@@ -266,12 +269,12 @@ document.addEventListener('click', function (event) {
   ============================*/
   const isDeleteButton = event.target.closest('.delete-button');
   if (isDeleteButton) {
-    // 1. Access id
-    const clickedElementTodo = isDeleteButton.closest('.todo');
-    const idTodo = clickedElementTodo.dataset.id;
+    // 1. Access element id
+    const selectedDeleteTodoElement = isDeleteButton.closest('.todo');
+    const selectedDeleteTodoElementId = selectedDeleteTodoElement.dataset.id;
 
     // 2. Delete
-    todoList.deleteTodo(idTodo);
+    todoList.deleteTodo(selectedDeleteTodoElementId);
 
     // 3. Render todo
     renderTodos();
@@ -289,10 +292,59 @@ document.addEventListener('click', function (event) {
   /* =========================
       EDIT FUNCTIONALITY
   ============================*/
+
   const isEditButton = event.target.closest('.edit-button');
   if (isEditButton) {
+    openModal();
+
+    // 1. Access element id
+    const selectedEditTodoElement = isEditButton.closest('.todo');
+    const selectedEditTodoElementId = selectedEditTodoElement.dataset.id;
+
+    // 2. Find the todo object that matches the selected edit element id
+    selectedEditTodoObject = todoList.todos.find(
+      (todo) => todo.id === selectedEditTodoElementId
+    );
+
+    modalInput.value = selectedEditTodoObject.todo;
+  }
+
+  const isModalChangeButton = event.target.closest('.modal-change-button');
+  if (isModalChangeButton) {
+    newTodoName = modalInput.value;
+
+    if (!newTodoName) {
+      modalInput.classList.add('border-red-500');
+      return;
+    }
+
+    modalInput.classList.remove('border-red-500');
+
+    // 3. Edit
+    selectedEditTodoObject.editTodo(newTodoName);
+
+    // 4. Render todo
+    renderTodos();
+
+    // 5. Close Modal
+    closeModal();
+  }
+
+  const isOverlay = event.target.closest('.overlay');
+  if (isOverlay) {
+    closeModal();
   }
 });
+
+function openModal() {
+  modal.classList.add('opacity-100');
+  modal.classList.remove('invisible');
+}
+
+function closeModal() {
+  modal.classList.remove('opacity-100');
+  modal.classList.add('invisible');
+}
 
 /* =============================================
       RENDER TODO LIST
