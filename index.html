@@ -146,8 +146,8 @@
       class="modal z-5 transition-all duration-300 opacity-0 invisible fixed inset-0 flex justify-center items-center h-screen"
     >
       <div class="overlay absolute z-10 inset-0 bg-black/60"></div>
-      <div
-        class="modal-box relative z-20 max-w-80 w-full bg-white dark:bg-[#202630] flex py-5 px-3 rounded-lg gap-2"
+      <form
+        class="modal-form relative z-20 max-w-80 w-full bg-white dark:bg-[#202630] flex py-5 px-3 rounded-lg gap-2"
       >
         <input
           type="text"
@@ -155,11 +155,12 @@
           class="modal-input w-full rounded-2xl border-2 border-[#3F9CA1] pl-3 md:py-2.5 md:rounded-3xl focus:outline-none focus:shadow-[0_0_5px_#3F9CA1] dark:text-gray-400 placeholder:text-gray-400 placeholder:dark:text-gray-400"
         />
         <button
+          type="submit"
           class="modal-change-button flex min-w-20 text-sm items-center justify-center gap-1 p-2 rounded-lg bg-[#3F9CA1] text-white cursor-pointer"
         >
           Change
         </button>
-      </div>
+      </form>
     </div>
   </body>
 </html>

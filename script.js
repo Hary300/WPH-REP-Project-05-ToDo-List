@@ -306,34 +306,41 @@ document.addEventListener('click', function (event) {
       (todo) => todo.id === selectedEditTodoElementId
     );
 
+    // 3. Fill input with previous todo name
     modalInput.value = selectedEditTodoObject.todo;
   }
 
-  const isModalChangeButton = event.target.closest('.modal-change-button');
-  if (isModalChangeButton) {
-    newTodoName = modalInput.value;
-
-    if (!newTodoName) {
-      modalInput.classList.add('border-red-500');
-      return;
-    }
-
-    modalInput.classList.remove('border-red-500');
-
-    // 3. Edit
-    selectedEditTodoObject.editTodo(newTodoName);
-
-    // 4. Render todo
-    renderTodos();
-
-    // 5. Close Modal
-    closeModal();
-  }
-
+  // Click overlay = close modal
   const isOverlay = event.target.closest('.overlay');
   if (isOverlay) {
     closeModal();
   }
+});
+
+const modalForm = document.querySelector('.modal-form');
+modalForm.addEventListener('submit', function (event) {
+  event.preventDefault();
+
+  // 1. Get new name from input
+  newTodoName = modalInput.value.trim();
+
+  // 2. Validation
+  if (!newTodoName) {
+    modalInput.classList.add('border-red-500');
+    return;
+  }
+
+  modalInput.classList.remove('border-red-500');
+
+  // 3. Edit
+  selectedEditTodoObject.editTodo(newTodoName);
+
+  // 4. Render todo
+  renderTodos();
+
+  // 5. Close Modal
+  closeModal();
+  // }
 });
 
 function openModal() {
@@ -352,10 +359,19 @@ function closeModal() {
 function renderTodos() {
   todoContainer.innerHTML = '';
 
+  if (todoList.todos.length === 0) {
+    todoContainer.innerHTML = `
+    <p class="text-center">No todos yet</p>
+    `;
+    return;
+  }
+
   todoList.todos.forEach((todo) => {
     updateTodoListUI(todo.todo, todo.id, todo.completed);
   });
 }
+
+renderTodos();
 
 /* =============================================
       UPDATE TODO LIST UI 
@@ -444,6 +460,29 @@ function updateTodoListUI(todo, id, completed) {
 /* =============================================
       STORAGE 
 ============================================= */
+// const isModalChangeButton = event.target.closest('.modal-change-button');
+// if (isModalChangeButton) {
+//   newTodoName = modalInput.value;
+
+//   if (!newTodoName) {
+//     modalInput.classList.add('border-red-500');
+//     return;
+//   }
+
+//   modalInput.classList.remove('border-red-500');
+
+//   // 3. Edit
+//   selectedEditTodoObject.editTodo(newTodoName);
+
+//   // 4. Render todo
+//   renderTodos();
+
+//   // 5. Close Modal
+//   closeModal();
+// }
+
+//========================================================================
+
 // function updateToggleTodoUI(markTodo, clickedElementTodo, clickedObjectTodo) {
 //   const textTodo = clickedElementTodo.querySelector('.text-todo');
 
