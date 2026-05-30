@@ -356,8 +356,16 @@ function closeModal() {
 /* =============================================
       RENDER TODO LIST
 ============================================= */
+let isLoadingData = false;
 function renderTodos() {
   todoContainer.innerHTML = '';
+
+  if (isLoadingData) {
+    todoContainer.innerHTML = `
+    <p class="text-center">Loading data...</p>
+    `;
+    return;
+  }
 
   if (todoList.todos.length === 0) {
     todoContainer.innerHTML = `
@@ -370,8 +378,6 @@ function renderTodos() {
     updateTodoListUI(todo.todo, todo.id, todo.completed);
   });
 }
-
-renderTodos();
 
 /* =============================================
       UPDATE TODO LIST UI 
@@ -466,6 +472,8 @@ function getVisibleTodos(todos) {
 
 async function fetchData() {
   try {
+    isLoadingData = true;
+    renderTodos();
     const res = await fetch('https://dummyjson.com/todo');
     if (!res.ok) {
       throw new Error(`Status: ${res.status}`);
@@ -475,6 +483,9 @@ async function fetchData() {
     return data;
   } catch (err) {
     return err;
+  } finally {
+    isLoadingData = false;
+    renderTodos();
   }
 }
 
