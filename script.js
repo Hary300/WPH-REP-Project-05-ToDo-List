@@ -357,9 +357,17 @@ function closeModal() {
       RENDER TODO LIST
 ============================================= */
 let isLoadingData = false;
+let isError = false;
+let errorMessage;
 function renderTodos() {
   todoContainer.innerHTML = '';
 
+  if (isError) {
+    todoContainer.innerHTML = `
+    <p class="text-center">${errorMessage}</p>
+    `;
+    return;
+  }
   if (isLoadingData) {
     todoContainer.innerHTML = `
     <p class="text-center">Loading data...</p>
@@ -476,13 +484,20 @@ async function fetchData() {
     renderTodos();
     const res = await fetch('https://dummyjson.com/todo');
     if (!res.ok) {
-      throw new Error(`Status: ${res.status}`);
+      const err = new Error('Request failed');
+      err.status = res.status;
+      throw err;
     }
     const data = await res.json();
 
     return data;
   } catch (err) {
-    return err;
+    isError = true;
+    if (err.status === 404) {
+      errorMessage = 'Data not found';
+    } else {
+      errorMessage = 'Something went wrong. Please try again';
+    }
   } finally {
     isLoadingData = false;
     renderTodos();
